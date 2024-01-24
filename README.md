@@ -1,0 +1,14 @@
+pip list
+Package           Version
+----------------- ---------
+azure-ai-vision   0.15.1b1
+distro            1.8.0
+h11               0.14.0
+idna              3.6
+pip               23.1.2
+pydub             0.25.1
+pygame            2.5.2
+python-vlc        3.0.20123
+setuptools        65.5.0
+sniffio           1.3.0
+typing_extensions 4.8.0
