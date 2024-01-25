@@ -1,0 +1,53 @@
+{
+  "projectFileVersion": "2022-05-01",
+  "stringIndexType": "Utf16CodeUnit",
+  "metadata": {
+    "projectKind": "CustomMultiLabelClassification",
+    "storageInputContainerName": "voc-data",
+    "projectName": "VoC",
+    "multilingual": false,
+    "description": "VoC Classification",
+    "language": "en",
+    "settings": {}
+  },
+  "assets": {
+    "projectKind": "customMultiLabelClassification",
+    "classes": [
+      {
+        "category": "label1"
+      },
+      {
+        "category": "label2"
+      },
+      {
+        "category": "label3"
+      }
+    ],
+    "documents": [
+      {
+        "location": "file-1.txt",
+        "language": "en-us",
+        "classes": [
+          {
+            "category": "Login"
+          },
+          {
+            "category": "Login11"
+          }
+        ]
+      },
+      {
+        "location": "file-2.txt",
+        "language": "en-us",
+        "classes": [
+          {
+            "category": "Benefits"
+          },
+          {
+            "category": "Benefits11"
+          }
+        ]
+      }
+    ]
+  }
+}
