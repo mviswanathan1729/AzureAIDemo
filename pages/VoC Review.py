@@ -1,7 +1,5 @@
 # -------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for
-# license information.
+# Voice of the Customer Review
 # --------------------------------------------------------------------------
 
 import streamlit as st
@@ -10,21 +8,18 @@ from azure.ai.contentsafety import ContentSafetyClient
 from azure.core.credentials import AzureKeyCredential
 from azure.core.exceptions import HttpResponseError
 from azure.ai.contentsafety.models import AnalyzeTextOptions
-
+from azure.ai.textanalytics import TextAnalyticsClient
 
 text = st.text_area(label="VoC Text", value="")
 submit_button = st.button(label="Submit")
 
+# [START multi_label_classify]
 def sample_classify_document_multi_label() -> None:
-    # [START multi_label_classify]
-    import os
-    from azure.core.credentials import AzureKeyCredential
-    from azure.ai.textanalytics import TextAnalyticsClient
 
     endpoint = os.environ["AZURE_LANGUAGE_ENDPOINT"]
     key = os.environ["AZURE_LANGUAGE_KEY"]
-    project_name = "vocproject"
-    deployment_name = "vocdeploy"
+    project_name = "voc2project"
+    deployment_name = "voc2deploy"
 
     text_analytics_client = TextAnalyticsClient(
         endpoint=endpoint,
@@ -79,7 +74,20 @@ def analyze_text(my_text):
     summary = response.get("categoriesAnalysis")
     st.sidebar.success(summary) 
 
+def sentiment_analysis(text):
+
+    endpoint = os.environ["AZURE_LANGUAGE_ENDPOINT"]
+    key = os.environ["AZURE_LANGUAGE_KEY"]
+
+    client = TextAnalyticsClient(endpoint, AzureKeyCredential(key))
+    documents = [text]
+
+    response = client.analyze_sentiment(documents)
+    st.sidebar.success(response[0].confidence_scores)
+
+    
 if submit_button:
     sample_classify_document_multi_label()
     analyze_text(text)
+    sentiment_analysis(text)
 
