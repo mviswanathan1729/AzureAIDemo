@@ -1,56 +1,42 @@
+# -------------------------------------------------------------------------
+# Image_Analysis
+# --------------------------------------------------------------------------
+
 import os
-import azure.ai.vision as sdk
+from azure.ai.vision.imageanalysis import ImageAnalysisClient
+from azure.ai.vision.imageanalysis.models import VisualFeatures
+from azure.core.credentials import AzureKeyCredential
 import streamlit as st
    
 imageCaptured = st.camera_input("capture image", key="firstCamera", help="help info")
 
 
-def main(name):
-    service_options = sdk.VisionServiceOptions(os.environ["VISION_ENDPOINT"],
-                                            os.environ["VISION_KEY"])
-    #vision_source = sdk.VisionSource(url=url)
-    vision_source = sdk.VisionSource(filename=name)
-    analysis_options = sdk.ImageAnalysisOptions()
-
-    analysis_options.features = (
-        sdk.ImageAnalysisFeature.CAPTION |
-        sdk.ImageAnalysisFeature.TEXT
+def main(image_name):
+    endpoint = os.environ["VISION_ENDPOINT"]
+    key = os.environ["VISION_KEY"]
+    
+    # Create an Image Analysis client for synchronous operations
+    client = ImageAnalysisClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(key)
     )
 
-    analysis_options.language = "en"
+    # Load image to analyze into a 'bytes' object
+    with open(image_name, "rb") as f:
+        image_data = f.read()
 
-    analysis_options.gender_neutral_caption = True
+    # Get a caption for the image. This will be a synchronously (blocking) call.
+    result = client.analyze(
+        image_data=image_data,
+        visual_features=[VisualFeatures.CAPTION],
+        gender_neutral_caption=True,  # Optional (default is False)
+    )
 
-    image_analyzer = sdk.ImageAnalyzer(service_options, vision_source, analysis_options)
+    # Display image caption and confidence score
+    if result.caption is not None:
+        st.sidebar.success(f"{result.caption.text}, Confidence {result.caption.confidence:.2f}")
 
-    result = image_analyzer.analyze()
-
-    if result.reason == sdk.ImageAnalysisResultReason.ANALYZED:
-
-        if result.caption is not None:
-            print(" Caption:")
-            print("   '{}', Confidence {:.4f}".format(result.caption.content, result.caption.confidence))
-            st.sidebar.success("{} (Confidence: {:.4f})".format(result.caption.content, result.caption.confidence))
-            abc = st.sidebar.success("done")
-        
-        if result.text is not None:
-            print(" Text:")
-            for line in result.text.lines:
-                points_string = "{" + ", ".join([str(int(point)) for point in line.bounding_polygon]) + "}"
-                print("   Line: '{}', Bounding polygon {}".format(line.content, points_string))
-                for word in line.words:
-                    points_string = "{" + ", ".join([str(int(point)) for point in word.bounding_polygon]) + "}"
-                    print("     Word: '{}', Bounding polygon {}, Confidence {:.4f}"
-                        .format(word.content, points_string, word.confidence))
-                    
-
-    else:
-
-        error_details = sdk.ImageAnalysisErrorDetails.from_result(result)
-        print(" Analysis failed.")
-        print("   Error reason: {}".format(error_details.reason))
-        print("   Error code: {}".format(error_details.error_code))
-        print("   Error message: {}".format(error_details.message))
+    
 
 
 if imageCaptured:
@@ -58,5 +44,3 @@ if imageCaptured:
    with open(fullname,"wb") as f:
          f.write(imageCaptured.getbuffer())
    main(fullname)
-else:
-   st.title ('no image')
