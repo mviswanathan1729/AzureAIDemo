@@ -2,8 +2,9 @@ import json
 import pandas as pd
 import re
 
-excel_file_path = "voc2.xlsx"
-output_folder_path = "text-folder"
+output_folder_path = "output-folder"
+input_folder_path = "input-folder"
+excel_file_path = f"{input_folder_path}/voc2.xlsx"
 
 # Create Labels JSON
 metadata = {
@@ -76,7 +77,7 @@ def processExcel(excel_file, output_folder):
 processExcel(excel_file_path, output_folder_path)
 
 # Save JSON to a file
-with open("labels.json", "w") as json_file:
+with open(f"{output_folder_path}/labels.json", "w") as json_file:
     json.dump(labels_json, json_file, indent=2)
 
 
