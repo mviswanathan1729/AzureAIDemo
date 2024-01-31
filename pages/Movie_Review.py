@@ -30,7 +30,6 @@ import streamlit as st
 
 text = st.text_area(label="Movie Plot", value="")
 submit_button = st.button(label="Submit")
-reset_button = st.button(label="Reset")
 
 def sample_classify_document_multi_label() -> None:
     # [START multi_label_classify]
@@ -71,8 +70,6 @@ def sample_classify_document_multi_label() -> None:
             ))
     # [END multi_label_classify]
 
-#if reset_button:
-    #
 if submit_button:
     sample_classify_document_multi_label()
 
